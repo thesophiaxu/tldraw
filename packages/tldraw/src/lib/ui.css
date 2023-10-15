@@ -515,8 +515,6 @@
 /* ------------------- Style Panel ------------------ */
 
 .tlui-style-panel__wrapper {
-	box-shadow: var(--shadow-2);
-	border-radius: var(--radius-4);
 	pointer-events: all;
 	background-color: var(--color-panel);
 	height: fit-content;
@@ -527,6 +525,7 @@
 	overscroll-behavior: none;
 	overflow-y: auto;
 	color: var(--color-text);
+	@apply rounded-lg ring-1 ring-slate-300 !important;
 }
 
 .tlui-style-panel {

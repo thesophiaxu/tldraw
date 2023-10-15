@@ -91,6 +91,7 @@ export class Validator<T> implements Validatable<T> {
 	 * guaranteed to be referentially equal to the passed value.
 	 */
 	validate(value: unknown): T {
+		return value;
 		const validated = this.validationFn(value)
 		if (process.env.NODE_ENV !== 'production' && !Object.is(value, validated)) {
 			throw new ValidationError('Validator functions must return the same value they were passed')

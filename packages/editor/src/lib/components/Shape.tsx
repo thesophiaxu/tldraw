@@ -41,8 +41,12 @@ export const Shape = track(function Shape({
 
 	const containerRef = React.useRef<HTMLDivElement>(null)
 	const backgroundContainerRef = React.useRef<HTMLDivElement>(null)
+	//const lastProperties = React.useRef<Record<string, any>>({})
 
 	const setProperty = React.useCallback((property: string, value: string) => {
+		//if (lastProperties.current[property] === value) return
+		//lastProperties.current[property] = value
+		//console.log('set', id, property, value)
 		containerRef.current?.style.setProperty(property, value)
 		backgroundContainerRef.current?.style.setProperty(property, value)
 	}, [])
@@ -75,6 +79,8 @@ export const Shape = track(function Shape({
 	useQuickReactor(
 		'set shape height and width',
 		() => {
+			// const shapeTemp = editor.getShape(id, true)
+			// if (!shapeTemp || shapeTemp.props?.isComplete === false) return null
 			const shape = editor.getShape(id)
 			if (!shape) return null
 
@@ -117,9 +123,9 @@ export const Shape = track(function Shape({
 					)}
 				</div>
 			)}
-			<div ref={containerRef} className="tl-shape" data-shape-type={shape.type} draggable={false}>
+			<div ref={containerRef} className={`tl-shape ${isCulled ? "tl-shape-culled" : ""}`} data-shape-type={shape.type} draggable={false}>
 				{isCulled ? (
-					<CulledShape shape={shape} />
+					null
 				) : (
 					<OptionalErrorBoundary fallback={ShapeErrorFallback as any} onError={annotateError}>
 						<InnerShape shape={shape} util={util} />
@@ -152,16 +158,16 @@ const InnerShapeBackground = React.memo(
 
 const CulledShape = React.memo(
 	function CulledShape<T extends TLShape>({ shape }: { shape: T }) {
-		const editor = useEditor()
-		const bounds = editor.getShapeGeometry(shape).bounds
+		//const editor = useEditor()
+		//const bounds = editor.getShapeGeometry(shape).bounds
 
 		return (
 			<div
 				className="tl-shape__culled"
 				style={{
-					transform: `translate(${bounds.minX}px, ${bounds.minY}px)`,
-					width: Math.max(1, bounds.width),
-					height: Math.max(1, bounds.height),
+					//transform: `translate(${bounds.minX}px, ${bounds.minY}px)`,
+					//width: Math.max(1, bounds.width),
+					//height: Math.max(1, bounds.height),
 				}}
 			/>
 		)

@@ -204,7 +204,7 @@ export class _Computed<Value, Diff = unknown> implements Computed<Value, Diff> {
 
 	get value(): Value {
 		const value = this.__unsafe__getWithoutCapture()
-		maybeCaptureParent(this)
+		maybeCaptureParent(this, true)
 		return value
 	}
 

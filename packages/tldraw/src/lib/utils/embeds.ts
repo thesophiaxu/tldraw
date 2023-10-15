@@ -76,6 +76,24 @@ export type TLEmbedResult =
  * @public
  */
 export function getEmbedInfoUnsafely(inputUrl: string): TLEmbedResult {
+	if (inputUrl === "about:blank") return {
+		url: "about:blank",
+		embedUrl: "about:blank",
+		definition: {
+			type: "link",
+			title: "",
+			hostnames: ["about:blank"],
+			fromEmbedUrl: (url) => url,
+			toEmbedUrl: (url) => url,
+			doesResize: false,
+			canUnmount: true,
+			width: 720,
+			height: 500,
+			minWidth: 300,
+			minHeight: 300,
+			backgroundColor: "white",
+		}
+	}
 	const result = matchUrl(inputUrl) ?? matchEmbedUrl(inputUrl)
 	return result
 }

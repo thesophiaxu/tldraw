@@ -6,6 +6,32 @@ const { min } = Math
 // This is the rate of change for simulated pressure. It could be an option.
 const RATE_OF_PRESSURE_CHANGE = 0.275
 
+/**
+ * Simulates the width of a calligraphy pen stroke based on the segment direction.
+ *
+ * @param {number} fromX - The starting x-coordinate.
+ * @param {number} fromY - The starting y-coordinate.
+ * @param {number} toX - The ending x-coordinate.
+ * @param {number} toY - The ending y-coordinate.
+ * @param {number} maxStrokeWidth - The maximum stroke width. 
+ * @returns {number} - The desired stroke width.
+ */
+function calligraphyPenWidth(fromX, fromY, toX, toY, maxStrokeWidth = 1.5, minStrokeWidth = 0.5) {
+    // Calculate the change in x and y direction.
+    let dx = toX - fromX;
+    let dy = toY - fromY;
+
+    // Calculate the angle of the stroke segment with respect to the x-axis.
+    let angle = Math.atan2(dy, dx);
+
+    // Calculate the stroke width based on the angle. 
+    // This assumes a 45-degree angle gives maximum width.
+    let desiredWidth = minStrokeWidth + (maxStrokeWidth-minStrokeWidth) * Math.abs(Math.sin(angle));
+
+    return desiredWidth;
+}
+
+
 /** @public */
 export function setStrokePointRadii(strokePoints: StrokePoint[], options: StrokeOptions) {
 	const {
@@ -72,7 +98,19 @@ export function setStrokePointRadii(strokePoints: StrokePoint[], options: Stroke
 					)
 				}
 
-				strokePoint.radius = size * easing(0.5 - thinning * (0.5 - pressure))
+				let calligraphyFactor = 1
+				if (thinning && !simulatePressure && i > 0) {
+					calligraphyFactor = calligraphyPenWidth(
+						strokePoints[i].input.x,
+						strokePoints[i].input.y,
+						strokePoints[i - 1].input.x,
+						strokePoints[i - 1].input.y,
+						1.5,
+						0.2,
+					)
+				}
+
+				strokePoint.radius = size * easing((0.5 - thinning * (0.5 - pressure)) * calligraphyFactor) 
 
 				prevPressure = pressure
 			} else {
@@ -121,6 +159,11 @@ export function setStrokePointRadii(strokePoints: StrokePoint[], options: Stroke
 
 			strokePoint.radius = Math.max(0.01, strokePoint.radius * Math.min(ts, te))
 		}
+	}
+
+	if (strokePoints.length <= 2) {
+		//strokePoints[0].radius = strokePoints[0].radius / 2
+		strokePoints.forEach((sp) => { sp.radius = sp.radius / 2 })
 	}
 
 	return strokePoints

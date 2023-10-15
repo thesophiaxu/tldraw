@@ -64,7 +64,7 @@ export class DrawShapeUtil extends ShapeUtil<TLDrawShape> {
 				return new Circle2d({
 					x: -strokeWidth,
 					y: -strokeWidth,
-					radius: strokeWidth,
+					radius: strokeWidth / 2,
 					isFilled: true,
 				})
 			}
@@ -284,7 +284,7 @@ export class DrawShapeUtil extends ShapeUtil<TLDrawShape> {
 }
 
 function getDot(point: VecLike, sw: number) {
-	const r = (sw + 1) * 0.5
+	const r = (sw + 1) * 0.25
 	return `M ${point.x} ${point.y} m -${r}, 0 a ${r},${r} 0 1,0 ${r * 2},0 a ${r},${r} 0 1,0 -${
 		r * 2
 	},0`

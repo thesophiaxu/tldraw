@@ -84,6 +84,10 @@ export class Erasing extends StateNode {
 		this.update()
 	}
 
+	override onPointerDraw = () => {
+		this.update()
+	}
+
 	override onPointerUp: TLEventHandlers['onPointerUp'] = () => {
 		this.complete()
 	}

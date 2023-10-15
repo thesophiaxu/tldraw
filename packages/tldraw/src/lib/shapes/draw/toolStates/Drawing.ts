@@ -48,6 +48,8 @@ export class Drawing extends StateNode {
 
 	canDraw = false
 
+	lastSegments = null;
+
 	override onEnter = (info: TLPointerEventInfo) => {
 		this.info = info
 		this.canDraw = !this.editor.isMenuOpen
@@ -57,7 +59,7 @@ export class Drawing extends StateNode {
 		}
 	}
 
-	override onPointerMove: TLEventHandlers['onPointerMove'] = () => {
+	override onPointerMove: TLEventHandlers['onPointerMove'] = (noFlush) => {
 		const {
 			editor: { inputs },
 		} = this
@@ -90,9 +92,14 @@ export class Drawing extends StateNode {
 			} else {
 				this.mergeNextPoint = false
 			}
-
-			this.updateShapes()
+			
+			this.updateShapes(noFlush === true)
 		}
+	}
+	
+	override onPointerDraw: TLEventHandlers['onPointerDraw'] = (info) => {
+		
+		this.onPointerMove(true)
 	}
 
 	override onKeyDown: TLEventHandlers['onKeyDown'] = (info) => {
@@ -226,6 +233,7 @@ export class Drawing extends StateNode {
 						segments,
 					},
 				}
+				this.lastSegments = segments;
 
 				if (this.canClose()) {
 					;(shapePartial as TLShapePartial<TLDrawShape>).props!.isClosed = this.getIsClosed(
@@ -252,6 +260,7 @@ export class Drawing extends StateNode {
 				x: originPagePoint.x,
 				y: originPagePoint.y,
 				props: {
+					isComplete: false,
 					isPen: this.isPen,
 					segments: [
 						{
@@ -272,7 +281,7 @@ export class Drawing extends StateNode {
 		this.initialShape = this.editor.getShape<DrawableShape>(id)
 	}
 
-	private updateShapes() {
+	private updateShapes(noFlush?: boolean) {
 		const { inputs } = this.editor
 		const { initialShape } = this
 
@@ -287,7 +296,10 @@ export class Drawing extends StateNode {
 
 		if (!shape) return
 
-		const { segments } = shape.props
+		let segments = this.lastSegments;
+		if (!segments) {
+			segments = shape.props.segments
+		}
 
 		const { x, y, z } = this.editor.getPointInShapeSpace(shape, inputs.currentPagePoint).toFixed()
 
@@ -356,6 +368,7 @@ export class Drawing extends StateNode {
 							segments: [...segments, newSegment],
 						},
 					}
+					this.lastSegments = [...segments, newSegment];
 
 					if (this.canClose()) {
 						;(shapePartial as TLShapePartial<TLDrawShape>).props!.isClosed = this.getIsClosed(
@@ -364,7 +377,7 @@ export class Drawing extends StateNode {
 						)
 					}
 
-					this.editor.updateShapes<TLDrawShape | TLHighlightShape>([shapePartial], {
+					if (!noFlush) this.editor.updateShapes<TLDrawShape | TLHighlightShape>([shapePartial], {
 						squashing: true,
 					})
 				}
@@ -418,6 +431,7 @@ export class Drawing extends StateNode {
 							segments: finalSegments,
 						},
 					}
+					this.lastSegments = finalSegments;
 
 					if (this.canClose()) {
 						;(shapePartial as TLShapePartial<TLDrawShape>).props!.isClosed = this.getIsClosed(
@@ -426,7 +440,7 @@ export class Drawing extends StateNode {
 						)
 					}
 
-					this.editor.updateShapes([shapePartial], { squashing: true })
+					if (!noFlush) this.editor.updateShapes([shapePartial], { squashing: true })
 				}
 
 				break
@@ -560,6 +574,7 @@ export class Drawing extends StateNode {
 						segments: newSegments,
 					},
 				}
+				this.lastSegments = newSegments;
 
 				if (this.canClose()) {
 					;(shapePartial as TLShapePartial<TLDrawShape>).props!.isClosed = this.getIsClosed(
@@ -568,7 +583,7 @@ export class Drawing extends StateNode {
 					)
 				}
 
-				this.editor.updateShapes([shapePartial], { squashing: true })
+				if (!noFlush) this.editor.updateShapes([shapePartial], { squashing: true })
 
 				break
 			}
@@ -605,6 +620,7 @@ export class Drawing extends StateNode {
 						segments: newSegments,
 					},
 				}
+				this.lastSegments = newSegments;
 
 				if (this.canClose()) {
 					;(shapePartial as TLShapePartial<TLDrawShape>).props!.isClosed = this.getIsClosed(
@@ -613,7 +629,7 @@ export class Drawing extends StateNode {
 					)
 				}
 
-				this.editor.updateShapes([shapePartial], { squashing: true })
+				if (!noFlush) this.editor.updateShapes([shapePartial], { squashing: true })
 
 				// Set a maximum length for the lines array; after 200 points, complete the line.
 				if (newPoints.length > 500) {
@@ -702,11 +718,13 @@ export class Drawing extends StateNode {
 		this.editor.updateShapes([
 			{ id: initialShape.id, type: initialShape.type, props: { isComplete: true } },
 		])
+		this.lastSegments = null;
 
 		this.parent.transition('idle', {})
 	}
 
 	cancel() {
+		this.lastSegments = null;
 		this.parent.transition('idle', this.info)
 	}
 }

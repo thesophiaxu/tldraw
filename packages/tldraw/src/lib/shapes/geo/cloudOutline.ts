@@ -111,8 +111,10 @@ export function getPillPoints(width: number, height: number, numPoints: number) 
 	return points
 }
 
-const switchSize = <T>(size: TLDefaultSizeStyle, s: T, m: T, l: T, xl: T) => {
+const switchSize = <T>(size: TLDefaultSizeStyle, xs: T, s: T, m: T, l: T, xl: T) => {
 	switch (size) {
+		case 'xs':
+			return xs
 		case 's':
 			return s
 		case 'm':
@@ -132,7 +134,7 @@ export function getCloudArcs(
 ) {
 	const getRandom = rng(seed)
 	const pillCircumference = getPillCircumference(width, height)
-	const numBumps = Math.max(Math.ceil(pillCircumference / switchSize(size, 50, 70, 100, 130)), 6)
+	const numBumps = Math.max(Math.ceil(pillCircumference / switchSize(size, 35, 50, 70, 100, 130)), 6)
 	const targetBumpProtrusion = (pillCircumference / numBumps) * 0.2
 
 	// if the aspect ratio is high, innerWidth should be smaller

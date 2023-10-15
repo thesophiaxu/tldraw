@@ -1,9 +1,9 @@
 import { EASINGS } from './primitives/easings'
 
 /** @internal */
-export const MAX_SHAPES_PER_PAGE = 2000
+export const MAX_SHAPES_PER_PAGE = 200000
 /** @internal */
-export const MAX_PAGES = 40
+export const MAX_PAGES = 4000
 
 /** @internal */
 export const ANIMATION_SHORT_MS = 80
@@ -11,9 +11,9 @@ export const ANIMATION_SHORT_MS = 80
 export const ANIMATION_MEDIUM_MS = 320
 
 /** @internal */
-export const ZOOMS = [0.1, 0.25, 0.5, 1, 2, 4, 8]
+export const ZOOMS = [0.25, 0.5, 0.75, 1, 1.5, 2, 4, 8]
 /** @internal */
-export const MIN_ZOOM = 0.1
+export const MIN_ZOOM = 0.25
 /** @internal */
 export const MAX_ZOOM = 8
 

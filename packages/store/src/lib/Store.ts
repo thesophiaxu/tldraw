@@ -429,6 +429,8 @@ export class Store<R extends UnknownRecord = UnknownRecord, Props = unknown> {
 				}
 			}
 
+			//console.timeStamp('loop over')
+
 			// Set the map of atoms to the store.
 			if (map) {
 				this.atoms.set(map)
@@ -459,6 +461,8 @@ export class Store<R extends UnknownRecord = UnknownRecord, Props = unknown> {
 					})
 				}
 			}
+
+			//console.timeStamp('put over')
 		})
 	}
 
@@ -770,14 +774,16 @@ export class Store<R extends UnknownRecord = UnknownRecord, Props = unknown> {
 	): ComputedCache<T, V> => {
 		const cache = new Cache<Atom<any>, Computed<T | undefined>>()
 		return {
-			get: (id: IdOf<V>) => {
+			get: (id: IdOf<V>, noCap?: boolean) => {
 				const atom = this.atoms.value[id]
 				if (!atom) {
 					return undefined
 				}
-				return cache.get(atom, () =>
+				const computedd = cache.get(atom, () =>
 					computed<T | undefined>(name + ':' + id, () => derive(atom.value as V))
-				).value
+				)
+				if (noCap) return computedd.__unsafe__getWithoutCapture()
+				return computedd.value
 			},
 		}
 	}

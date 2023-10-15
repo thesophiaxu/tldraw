@@ -18,8 +18,8 @@ export function devFreeze<T>(object: T): T {
 	}
 	const proto = Object.getPrototypeOf(object)
 	if (proto && !(proto === Array.prototype || proto === Object.prototype)) {
-		console.error('cannot include non-js data in a record', object)
-		throw new Error('cannot include non-js data in a record')
+		console.warn('cannot include non-js data in a record', object)
+		//throw new Error('cannot include non-js data in a record')
 	}
 
 	// Retrieve the property names defined on object

@@ -334,6 +334,10 @@ input,
 	transform-origin: top left;
 }
 
+.tl-shape-culled {
+	content-visibility: hidden;
+}
+
 .tl-shape__culled {
 	position: relative;
 	background-color: var(--color-culled);

@@ -45,15 +45,17 @@ function getArrowPoints(
 export function getArrowhead({ point, int }: TLArrowPointsInfo) {
 	const PL = Vec2d.RotWith(int, point, PI / 6)
 	const PR = Vec2d.RotWith(int, point, -PI / 6)
+	const scale = 1 / (window.editor?.zoomLevel || 1)
 
-	return `M ${PL.x} ${PL.y} L ${point.x} ${point.y} L ${PR.x} ${PR.y}`
+	return `M ${point.x + (PL.x - point.x) * scale} ${point.y + (PL.y - point.y) * scale} L ${point.x} ${point.y} L ${point.x + (PR.x - point.x) * scale} ${point.y + (PR.y - point.y) * scale}`
 }
 
 export function getTriangleHead({ point, int }: TLArrowPointsInfo) {
 	const PL = Vec2d.RotWith(int, point, PI / 6)
 	const PR = Vec2d.RotWith(int, point, -PI / 6)
+	const scale = 1 / (window.editor?.zoomLevel || 1)
 
-	return `M ${PL.x} ${PL.y} L ${point.x} ${point.y} L ${PR.x} ${PR.y} Z`
+	return `M ${PL.x * scale} ${PL.y * scale} L ${point.x * scale} ${point.y * scale} L ${PR.x * scale} ${PR.y * scale} Z`
 }
 
 export function getInvertedTriangleHead({ point, int }: TLArrowPointsInfo) {

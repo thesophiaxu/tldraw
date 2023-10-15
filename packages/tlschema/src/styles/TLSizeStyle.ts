@@ -4,7 +4,7 @@ import { StyleProp } from './StyleProp'
 /** @public */
 export const DefaultSizeStyle = StyleProp.defineEnum('tldraw:size', {
 	defaultValue: 'm',
-	values: ['s', 'm', 'l', 'xl'],
+	values: ['xs', 's', 'm', 'l', 'xl'],
 })
 
 /** @public */

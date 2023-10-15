@@ -19,6 +19,17 @@ import { getFontDefForExport } from '../shared/defaultStyleDefs'
 import { getTextLabelSvgElement } from '../shared/getTextLabelSvgElement'
 
 const NOTE_SIZE = 200
+const NOTE_SIZE_XS = 160
+
+const getNoteSize = (shape: TLNoteShape) => {
+	return shape.props.size === 'xs' ? NOTE_SIZE_XS : NOTE_SIZE
+}
+
+const getNoteWidth = (shape: TLNoteShape) => {
+	if (shape.props.width) return shape.props.width;
+	return shape.props.size === 'xs' ? NOTE_SIZE_XS : NOTE_SIZE
+}
+
 
 /** @public */
 export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
@@ -44,12 +55,12 @@ export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
 	}
 
 	getHeight(shape: TLNoteShape) {
-		return NOTE_SIZE + shape.props.growY
+		return getNoteSize(shape) + shape.props.growY
 	}
 
 	getGeometry(shape: TLNoteShape) {
 		const height = this.getHeight(shape)
-		return new Rectangle2d({ width: NOTE_SIZE, height, isFilled: true })
+		return new Rectangle2d({ width: getNoteWidth(shape), height, isFilled: true })
 	}
 
 	component(shape: TLNoteShape) {
@@ -68,7 +79,7 @@ export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
 				<div
 					style={{
 						position: 'absolute',
-						width: NOTE_SIZE,
+						width: getNoteWidth(shape),
 						height: this.getHeight(shape),
 					}}
 				>
@@ -104,7 +115,7 @@ export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
 		return (
 			<rect
 				rx="7"
-				width={toDomPrecision(NOTE_SIZE)}
+				width={toDomPrecision(getNoteWidth(shape))}
 				height={toDomPrecision(this.getHeight(shape))}
 			/>
 		)
@@ -121,7 +132,7 @@ export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
 
 		const rect1 = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		rect1.setAttribute('rx', '10')
-		rect1.setAttribute('width', NOTE_SIZE.toString())
+		rect1.setAttribute('width', getNoteWidth(shape).toString())
 		rect1.setAttribute('height', bounds.height.toString())
 		rect1.setAttribute('fill', theme[adjustedColor].solid)
 		rect1.setAttribute('stroke', theme[adjustedColor].solid)
@@ -130,7 +141,7 @@ export class NoteShapeUtil extends ShapeUtil<TLNoteShape> {
 
 		const rect2 = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
 		rect2.setAttribute('rx', '10')
-		rect2.setAttribute('width', NOTE_SIZE.toString())
+		rect2.setAttribute('width', getNoteWidth(shape).toString())
 		rect2.setAttribute('height', bounds.height.toString())
 		rect2.setAttribute('fill', theme.background)
 		rect2.setAttribute('opacity', '.28')
@@ -194,15 +205,15 @@ function getGrowY(editor: Editor, shape: TLNoteShape, prevGrowY = 0) {
 		...TEXT_PROPS,
 		fontFamily: FONT_FAMILIES[shape.props.font],
 		fontSize: LABEL_FONT_SIZES[shape.props.size],
-		width: NOTE_SIZE - PADDING * 2 + 'px',
+		width: getNoteWidth(shape) - PADDING * 2 + 'px',
 	})
 
 	const nextHeight = nextTextSize.h + PADDING * 2
 
 	let growY: number | null = null
 
-	if (nextHeight > NOTE_SIZE) {
-		growY = nextHeight - NOTE_SIZE
+	if (nextHeight > getNoteSize(shape)) {
+		growY = nextHeight - getNoteSize(shape)
 	} else {
 		if (prevGrowY) {
 			growY = 0

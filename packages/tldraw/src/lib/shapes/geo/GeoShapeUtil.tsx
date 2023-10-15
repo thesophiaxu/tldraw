@@ -1054,6 +1054,7 @@ function getLabelSize(editor: Editor, shape: TLGeoShape) {
 
 	// TODO: Can I get these from somewhere?
 	const sizes = {
+		xs: 1,
 		s: 2,
 		m: 3.5,
 		l: 5,

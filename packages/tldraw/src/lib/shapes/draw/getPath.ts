@@ -24,8 +24,8 @@ const simulatePressureSettings = (strokeWidth: number): StrokeOptions => {
 
 const realPressureSettings = (strokeWidth: number): StrokeOptions => {
 	return {
-		size: 1 + strokeWidth * 1.2,
-		thinning: 0.62,
+		size: 1 + strokeWidth * 0.8,
+		thinning: 0.9,
 		streamline: 0.62,
 		smoothing: 0.62,
 		simulatePressure: false,

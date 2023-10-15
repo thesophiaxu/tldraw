@@ -92,7 +92,8 @@ export function stopCapturingParents() {
 }
 
 // this must be called after the parent is up to date
-export function maybeCaptureParent(p: Signal<any, any>) {
+export function maybeCaptureParent(p: Signal<any, any>, log = false) {
+	//if (log && stack?.child?.parents.length > 1000) console.log("maybeCaptureParent", p, stack);
 	if (stack) {
 		const idx = stack.child.parents.indexOf(p)
 		// if the child didn't deref this parent last time it executed, then idx will be -1

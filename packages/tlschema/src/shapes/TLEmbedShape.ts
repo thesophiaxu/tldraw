@@ -598,6 +598,7 @@ export const embedShapeProps = {
 	w: T.nonZeroNumber,
 	h: T.nonZeroNumber,
 	url: T.string,
+	js: T.optional(T.string),
 }
 
 /** @public */

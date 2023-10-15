@@ -14,7 +14,7 @@ import {
 	useIsEditing,
 	useValue,
 } from '@tldraw/editor'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getEmbedInfo, getEmbedInfoUnsafely } from '../../utils/embeds'
 import { getRotatedBoxShadow } from '../../utils/rotated-box-shadow'
 import { resizeBox } from '../shared/resizeBox'
@@ -123,6 +123,24 @@ export class EmbedShapeUtil extends BaseBoxShapeUtil<TLEmbedShape> {
 			...(embedInfo?.definition.overridePermissions ?? {}),
 		})
 
+		const tgtRef = useRef<any>(null);
+		const [loaded, setLoaded] = useState(false);
+		useEffect(() => {
+			console.log('1', loaded, shape.props.js, tgtRef.current)
+			if (!loaded || !tgtRef.current || !shape.props.js) return;
+			console.log('2')
+			const tgt = tgtRef.current as HTMLIFrameElement;
+			// execute script
+			const script = tgt.contentDocument!.createElement('script');
+			script.text = shape.props.js;
+			tgt.contentDocument?.head.appendChild(script);
+		}, [loaded, shape.props.js]);
+		useEffect(() => {
+			setTimeout(() => {
+				setLoaded(true);
+			}, 100);
+		}, []);
+
 		return (
 			<HTMLContainer className="tl-embed-container" id={shape.id}>
 				{embedInfo?.definition ? (
@@ -132,6 +150,7 @@ export class EmbedShapeUtil extends BaseBoxShapeUtil<TLEmbedShape> {
 						src={embedInfo.embedUrl}
 						width={toDomPrecision(w)}
 						height={toDomPrecision(h)}
+						ref={tgtRef}
 						draggable={false}
 						frameBorder="0"
 						referrerPolicy="no-referrer-when-downgrade"

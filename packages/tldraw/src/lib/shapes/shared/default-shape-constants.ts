@@ -12,6 +12,7 @@ export const TEXT_PROPS = {
 
 /** @public */
 export const STROKE_SIZES: Record<TLDefaultSizeStyle, number> = {
+	xs: 1,
 	s: 2,
 	m: 3.5,
 	l: 5,
@@ -20,6 +21,7 @@ export const STROKE_SIZES: Record<TLDefaultSizeStyle, number> = {
 
 /** @public */
 export const FONT_SIZES: Record<TLDefaultSizeStyle, number> = {
+	xs: 13,
 	s: 18,
 	m: 24,
 	l: 36,
@@ -28,6 +30,7 @@ export const FONT_SIZES: Record<TLDefaultSizeStyle, number> = {
 
 /** @public */
 export const LABEL_FONT_SIZES: Record<TLDefaultSizeStyle, number> = {
+	xs: 13,
 	s: 18,
 	m: 22,
 	l: 26,
@@ -36,6 +39,7 @@ export const LABEL_FONT_SIZES: Record<TLDefaultSizeStyle, number> = {
 
 /** @public */
 export const ARROW_LABEL_FONT_SIZES: Record<TLDefaultSizeStyle, number> = {
+	xs: 13,
 	s: 18,
 	m: 20,
 	l: 24,
