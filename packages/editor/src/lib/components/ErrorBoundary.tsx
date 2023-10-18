@@ -23,7 +23,8 @@ export class ErrorBoundary extends React.Component<
 
 	override state = initialState
 
-	override componentDidCatch(error: unknown) {
+	override componentDidCatch(error: unknown, errorInfo: any) {
+		error.componentStack = errorInfo.componentStack
 		this.props.onError?.(error)
 	}
 
@@ -32,7 +33,10 @@ export class ErrorBoundary extends React.Component<
 
 		if (error !== null) {
 			const { fallback: Fallback } = this.props
-			return <Fallback error={error} />
+			return <Fallback error={error} retry={() => {
+				console.log('retry')
+				this.setState(initialState);
+			}} />
 		}
 
 		return this.props.children

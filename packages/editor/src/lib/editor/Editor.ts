@@ -3023,12 +3023,13 @@ export class Editor extends EventEmitter<TLEventMap> {
 		const addShapeById = (id: TLShapeId, parentOpacity: number, isAncestorErasing: boolean) => {
 			shape = this.getShape(id, true)
 			if (!shape) return
+			const isInteractive = id === editingShapeId || selectedShapeIds.includes(id) || (shape.type === "draw" && shape.props?.isComplete === false)
 
 			opacity = shape.opacity * parentOpacity
 			isShapeErasing = false
 			isCulled = false
 			util = this.getShapeUtil(shape)
-			maskedPageBounds = this.getShapeMaskedPageBounds(id, true)
+			maskedPageBounds = this.getShapeMaskedPageBounds(id, !isInteractive)
 
 			if (useEditorState) {
 				if (!isAncestorErasing && erasingShapeIds.includes(id)) {
@@ -3049,6 +3050,8 @@ export class Editor extends EventEmitter<TLEventMap> {
 							// ...and if it's not selected... then cull it
 							!selectedShapeIds.includes(id)))
 			}
+
+			if (isCullingOffScreenShapes && isCulled) return;
 
 			renderingShapes.push({
 				id,
@@ -4015,7 +4018,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 	 */
 	getShapeMaskedPageBounds(shape: TLShapeId | TLShape, noCap?: boolean): Box2d | undefined {
 		if (typeof shape !== 'string') shape = shape.id
-		const pageBounds = this._shapePageBoundsCache.get(shape)
+		const pageBounds = this._shapePageBoundsCache.get(shape, noCap)
 		if (!pageBounds) return
 		const pageMask = this._shapeMaskCache.get(shape, noCap)
 		if (pageMask) {
