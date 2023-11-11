@@ -2196,6 +2196,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 	 */
 	zoomIn(point = this.viewportScreenCenter, animation?: TLAnimationOptions): this {
 		if (!this.instanceState.canMoveCamera) return this
+		if ((window as any).__zoomLocked) return this
 
 		const { x: cx, y: cy, z: cz } = this.camera
 
@@ -2234,6 +2235,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 	 */
 	zoomOut(point = this.viewportScreenCenter, animation?: TLAnimationOptions): this {
 		if (!this.instanceState.canMoveCamera) return this
+		if ((window as any).__zoomLocked) return this
 
 		const { x: cx, y: cy, z: cz } = this.camera
 
@@ -2275,6 +2277,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 	 */
 	zoomToSelection(animation?: TLAnimationOptions): this {
 		if (!this.instanceState.canMoveCamera) return this
+		if ((window as any).__zoomLocked) return this
 
 		const { selectionPageBounds } = this
 		if (!selectionPageBounds) return this
@@ -2354,6 +2357,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 	 */
 	zoomToBounds(bounds: Box2d, targetZoom?: number, animation?: TLAnimationOptions): this {
 		if (!this.instanceState.canMoveCamera) return this
+		if ((window as any).__zoomLocked) return this
 
 		const { viewportScreenBounds } = this
 
@@ -8534,7 +8538,8 @@ export class Editor extends EventEmitter<TLEventMap> {
 								camera: { x: cx, y: cy, z: cz },
 							} = this
 
-							const zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z))
+							let zoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z))
+							if ((window as any).__zoomLocked) zoom = cz;
 
 							this.setCamera({
 								x: cx + dx / cz - x / cz + x / zoom,
@@ -8567,6 +8572,7 @@ export class Editor extends EventEmitter<TLEventMap> {
 							if (cz > this._pinchStart - 0.1 && cz < this._pinchStart + 0.05) {
 								zoom = this._pinchStart
 							}
+							if ((window as any).__zoomLocked) zoom = cz;
 
 							if (zoom !== undefined) {
 								const { x, y } = this.viewportScreenCenter
